@@ -1,0 +1,51 @@
+# Global ignores (applies to all folders)
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.old
+
+# Node.js (projectone)
+projectone/node_modules/
+projectone/dist/
+projectone/out-tsc/
+projectone/coverage/
+projectone/src/environments/environment*.ts
+
+# Angular-specific
+projectone/.angular
+projectone/yarn.lock
+
+# Logs
+projectone/npm-debug.log*
+projectone/yarn-debug.log*
+projectone/yarn-error.log*
+
+# IDE files
+projectone/.idea/
+projectone/.vscode/
+
+# .NET (Backend)
+backend/bin/
+backend/obj/
+backend/*.user
+backend/*.rsuser
+backend/*.pdb
+backend/*.lock
+
+# ASP.NET-specific
+backend/wwwroot/
+backend/secrets.json
+backend/migrations/
+
+# .NET publish outputs
+backend/appsettings*.json
+
+# IDE files
+backend/.idea/
+backend/.vscode/
+
+# Logs and coverage for backend
+backend/*.log
+backend/coverage/
