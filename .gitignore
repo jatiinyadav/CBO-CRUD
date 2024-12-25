@@ -6,46 +6,47 @@ Thumbs.db
 *.bak
 *.old
 
-# Node.js (projectone)
-projectone/node_modules/
-projectone/dist/
-projectone/out-tsc/
-projectone/coverage/
-projectone/src/environments/environment*.ts
+# Node.js (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/out-tsc/
+frontend/coverage/
+frontend/src/environments/environment*.ts
 
 # Angular-specific
-projectone/.angular
-projectone/yarn.lock
+frontend/.angular
+frontend/.vs
+frontend/yarn.lock
 
 # Logs
-projectone/npm-debug.log*
-projectone/yarn-debug.log*
-projectone/yarn-error.log*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
 # IDE files
-projectone/.idea/
-projectone/.vscode/
+frontend/.idea/
+frontend/.vscode/
 
-# .NET (Backend)
-backend/bin/
-backend/obj/
-backend/*.user
-backend/*.rsuser
-backend/*.pdb
-backend/*.lock
+# .NET (ProjectOne)
+ProjectOne/bin/
+ProjectOne/obj/
+ProjectOne/*.user
+ProjectOne/*.rsuser
+ProjectOne/*.pdb
+ProjectOne/*.lock
 
 # ASP.NET-specific
-backend/wwwroot/
-backend/secrets.json
-backend/migrations/
+ProjectOne/wwwroot/
+ProjectOne/secrets.json
+ProjectOne/migrations/
 
 # .NET publish outputs
-backend/appsettings*.json
+ProjectOne/appsettings*.json
 
 # IDE files
-backend/.idea/
-backend/.vscode/
+ProjectOne/.idea/
+ProjectOne/.vscode/
 
-# Logs and coverage for backend
-backend/*.log
-backend/coverage/
+# Logs and coverage for ProjectOne
+ProjectOne/*.log
+ProjectOne/coverage/
