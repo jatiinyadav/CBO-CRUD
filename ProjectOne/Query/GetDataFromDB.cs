@@ -1,6 +1,7 @@
 ﻿using HotChocolate.Subscriptions;
 using Microsoft.Data.SqlClient;
 using ProjectOne.Model;
+using TableDependency.SqlClient.Base.Enums;
 
 namespace ProjectOne.Query
 {
@@ -24,27 +25,56 @@ namespace ProjectOne.Query
                 using (var connection = new SqlConnection(_connectionString))
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Name", user.User.Name);
+                    command.Parameters.AddWithValue("@Name", user.User!.Name);
                     command.Parameters.AddWithValue("@Email", user.User.Email);
                     command.Parameters.AddWithValue("@IsActive", user.User.IsActive);
 
                     await connection.OpenAsync();
                     var result = await command.ExecuteScalarAsync();
 
-                    // Send the inserted user data to subscribers
                     await _eventSender.SendAsync("OnUserAdded", user);
 
-                    // SCOPE_IDENTITY() returns the last inserted identity value
                     return Convert.ToInt32(result);
                 }
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., log the error)
                 Console.WriteLine($"Error inserting user: {ex.Message}");
                 throw;
             }
         }
+
+        public async Task<bool> DeleteUserAsync(UserChangePayload user)
+        {
+            const string query = "DELETE FROM UserDetails WHERE Id = @Id;";
+
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", user.User!.Id);
+
+                    await connection.OpenAsync();
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    if (rowsAffected > 0)
+                    {
+                        user.Operation = ChangeType.Delete;
+                        await _eventSender.SendAsync("OnUserAdded", user);
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting user: {ex.Message}");
+                throw;
+            }
+        }
+
 
 
         public async Task<List<User>> GetUsersAsync()

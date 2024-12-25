@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { GET_USERS, ON_USER_ADDED } from '../graphql.queries';
+import { DELETE_USER, GET_USERS, SUBSCRIBE_USER } from '../graphql.queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DataTable } from 'simple-datatables';
 
@@ -17,6 +17,11 @@ interface ResponseData {
     operation: string;
     user: UserDetails;
   };
+}
+
+interface DeleteUser {
+  operation: string;
+  user: UserDetails;
 }
 
 @Component({
@@ -46,52 +51,23 @@ export class UsersComponent {
   }
 
   fetchUsers() {
-    this.apollo.watchQuery<any>({ query: GET_USERS }).valueChanges.subscribe(({ data }) => {
+    this.apollo.query<any>({ query: GET_USERS }).subscribe(({ data }) => {
       this.users = data.users;
       this.fetchingUsers = false;
-      setTimeout(() => {
-        this.createTable();
-      }, 0);
       console.log('Fetched Users:', this.users);
     });
-  }
-
-  private dataTableInstance: DataTable | null = null;
-  createTable() {
-    const tableElement = document.getElementById('default-table');
-
-    if (tableElement) {
-
-      if (this.dataTableInstance) {
-        this.dataTableInstance.destroy();
-        this.dataTableInstance = null;  // Clear the reference after destroying
-      }
-
-      setTimeout(() => {
-        this.dataTableInstance = new DataTable(tableElement as HTMLTableElement, {
-          searchable: true,
-          sortable: true,
-          perPage: 5,
-          perPageSelect: [3, 5, 10],
-        });
-      }, 100)
-
-    }
   }
 
   subscribeToUserAdded() {
     if (!this.subscription) {
       this.subscription = this.apollo
-        .subscribe<ResponseData>({ query: ON_USER_ADDED })
+        .subscribe<ResponseData>({ query: SUBSCRIBE_USER })
         .subscribe(({ data }) => {
 
           if (data && data.onRoleAdded.operation == 'INSERT') {
             const { onRoleAdded } = data;
-            this.users = [...this.users, onRoleAdded.user];
+            this.users = [onRoleAdded.user, ...this.users];
             console.log('New User Added:', this.users);
-            setTimeout(() => {
-              this.createTable();
-            }, 0);
           }
 
           else if (data && data.onRoleAdded.operation == 'DELETE') {
@@ -108,5 +84,34 @@ export class UsersComponent {
           }
         });
     }
+  }
+
+  deleteUser(user: UserDetails) {
+
+    const deleteUser: DeleteUser = {
+      operation: 'DELETE',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdDate: user.createdDate,
+        isActive: user.isActive,
+      },
+
+    }
+
+    this.apollo
+      .mutate({
+        mutation: DELETE_USER,
+      })
+      .subscribe(
+        (response) => {
+          console.log('User deleted:', response);
+        },
+        (error) => {
+          console.error('Error deleting user:', error);
+        }
+      );
+
   }
 }

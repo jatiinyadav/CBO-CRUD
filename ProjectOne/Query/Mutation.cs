@@ -9,5 +9,11 @@ namespace ProjectOne.Query
             await dataService.InsertedUserAsync(user);
             return user;
         }
+
+        public async Task<UserChangePayload> DeleteUserAsync(UserChangePayload user, [Service] GetDataFromDB dataService)
+        {
+            await dataService.DeleteUserAsync(user);
+            return user;
+        }
     }
 }
