@@ -9,12 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { ApolloSetupModule } from './apollo/apollosetup.module';
 import { FormComponent } from './form/form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UsersComponent,
-    FormComponent
+    FormComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     ReactiveFormsModule,
