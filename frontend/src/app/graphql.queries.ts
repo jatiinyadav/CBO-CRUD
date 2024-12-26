@@ -28,17 +28,8 @@ export const SUBSCRIBE_USER = gql`
   `;
 
 export const MUTATE_USER = gql`
-  mutation ChangeUser {
-    insertNewUser(user: {
-      operation: INSERT,
-      user: {
-        id: 100,
-        name: "John Doe",
-        email: "johndoe@example.com",
-        createdDate: "2024-12-21T00:00:00Z", 
-        isActive: true 
-      }
-    }) {
+  mutation InsertNewUser($user: UserChangePayloadInput!) {
+    insertNewUser(user: $user) {
       operation
       user {
         id
@@ -50,17 +41,8 @@ export const MUTATE_USER = gql`
 `;
 
 export const DELETE_USER = gql`
-  mutation DeleteUser {
-    deleteUser(user: {
-      operation: DELETE,
-      user: {
-        id: 37,
-        name: "Jane Smith",
-        email: "john.snow@example.com",
-        createdDate: "2024-12-25T11:57:14.537Z", 
-        isActive: false 
-      }
-    }) {
+  mutation DeleteUser($user: UserChangePayloadInput!) {
+    deleteUser(user: $user) {
       operation
       user {
         id

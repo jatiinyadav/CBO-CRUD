@@ -7,13 +7,17 @@ import { ApolloModule } from 'apollo-angular';
 import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ApolloSetupModule } from './apollo/apollosetup.module';
+import { FormComponent } from './form/form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UsersComponent
+    UsersComponent,
+    FormComponent
   ],
   imports: [
+    ReactiveFormsModule,
     ApolloSetupModule,
     HttpClientModule,
     ApolloModule,

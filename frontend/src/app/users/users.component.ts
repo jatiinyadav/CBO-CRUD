@@ -1,8 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { DELETE_USER, GET_USERS, SUBSCRIBE_USER } from '../graphql.queries';
+import { DELETE_USER, GET_USERS, MUTATE_USER, SUBSCRIBE_USER } from '../graphql.queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { DataTable } from 'simple-datatables';
 
 interface UserDetails {
   id: number;
@@ -12,6 +11,13 @@ interface UserDetails {
   isActive: boolean;
 }
 
+enum ChangeType {
+  NONE,
+  DELETE,
+  INSERT,
+  UPDATE
+}
+
 interface ResponseData {
   onRoleAdded: {
     operation: string;
@@ -19,8 +25,8 @@ interface ResponseData {
   };
 }
 
-interface DeleteUser {
-  operation: string;
+interface UserChangePayloadInput {
+  operation: ChangeType;
   user: UserDetails;
 }
 
@@ -41,8 +47,12 @@ export class UsersComponent {
 
   users$: BehaviorSubject<UserDetails[]> = new BehaviorSubject<UserDetails[]>([]);
   columns = ["Name", "Email", "Created Date", "IsActive"]
+  public fullName = "";
+  public email = "";
+  public isActive = false;
   fetchingUsers = true;
   private subscription!: Subscription;
+  public addingNewUser = false;
   constructor(private apollo: Apollo) { }
 
   ngOnInit() {
@@ -66,7 +76,7 @@ export class UsersComponent {
 
           if (data && data.onRoleAdded.operation == 'INSERT') {
             const { onRoleAdded } = data;
-            this.users = [onRoleAdded.user, ...this.users];
+            this.users = [...this.users, onRoleAdded.user];
             console.log('New User Added:', this.users);
           }
 
@@ -87,31 +97,74 @@ export class UsersComponent {
   }
 
   deleteUser(user: UserDetails) {
-
-    const deleteUser: DeleteUser = {
-      operation: 'DELETE',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdDate: user.createdDate,
-        isActive: user.isActive,
-      },
-
-    }
-
+    console.log(user);
     this.apollo
       .mutate({
         mutation: DELETE_USER,
-      })
-      .subscribe(
-        (response) => {
-          console.log('User deleted:', response);
-        },
-        (error) => {
-          console.error('Error deleting user:', error);
+        variables: {
+          "user": {
+            "operation": `DELETE`,
+            "user": {
+              "id": user.id,
+              "name": `${user.name}`,
+              "email": `${user.email}`,
+              "createdDate": `${user.createdDate}`,
+              "isActive": user.isActive,
+            },
+          }
         }
-      );
+      })
+      .subscribe(({ data, errors, loading }) => {
+        if (errors) {
+          console.error('Error creating user', errors);
+          alert(`Error creating user: ${errors[0].message}`);
+        }
+        if (data) {
+          console.log('New user created', JSON.stringify(data, null, 2));
+        }
+      });
+  }
 
+  addNewUser() {
+    this.addingNewUser = !this.addingNewUser
+  }
+
+  receiveNewUser(user: any) {
+    console.log(user);
+    this.apollo
+      .mutate({
+        mutation: MUTATE_USER,
+        variables: {
+          "user": {
+            "operation": `INSERT`,
+            "user": {
+              "id": 100,
+              "name": `${user.fullName}`,
+              "email": `${user.email}`,
+              "createdDate": `2024-12-21T00:00:00Z`,
+              "isActive": false,
+            },
+          }
+        }
+      })
+      .subscribe(({ data, errors, loading }) => {
+        if (errors) {
+          console.error('Error creating user', errors);
+          alert(`Error creating user: ${errors[0].message}`);
+        }
+        if (data) {
+          console.log('New user created', JSON.stringify(data, null, 2));
+        }
+      });
+    this.addingNewUser = !this.addingNewUser
+  }
+
+  updateUser(user: UserDetails) {
+    this.fullName = user.name
+    this.email = user.email
+    this.isActive = user.isActive
+    console.log(user);
+    
+    this.addingNewUser = !this.addingNewUser
   }
 }
