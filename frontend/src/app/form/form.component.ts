@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class FormComponent {
   form: FormGroup;
+  @Input() id = 100
   @Input() fullName = ""
   @Input() email = ""
   @Input() status = false
@@ -17,6 +18,7 @@ export class FormComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
+      id: [this.id],
       fullName: [this.fullName],
       email: [this.email],
       status: [this.status]
@@ -24,6 +26,7 @@ export class FormComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.form.get('id')?.setValue(changes['id'].currentValue)
     this.form.get('status')?.setValue(changes['status'].currentValue == false ? "inactive" : "active");
     this.showForm = !this.showForm
   }

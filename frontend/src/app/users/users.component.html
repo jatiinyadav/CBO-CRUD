@@ -39,7 +39,7 @@
               {{user.createdDate}}
             </td>
             <td class="px-6 py-4">
-              {{user.isActive == false ? "Offline": "Online"}}
+              {{user.isActive == false ? "InActive": "Active"}}
             </td>
             <td class="py-4">
               <div class="flex space-x-4">
@@ -71,7 +71,7 @@
     </div>
     }
     @else {
-    <app-form [fullName]="this.fullName" [email]="this.email" [status]="this.isActive"  (newUser)="receiveNewUser($event)"></app-form>
+    <app-form [id]="this.id" [fullName]="this.fullName" [email]="this.email" [status]="this.isActive"  (newUser)="receiveNewUser($event)"></app-form>
     }
   </div>
 </div>

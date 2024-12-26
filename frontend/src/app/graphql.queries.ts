@@ -27,7 +27,7 @@ export const SUBSCRIBE_USER = gql`
     }
   `;
 
-export const MUTATE_USER = gql`
+export const INSERT_USER = gql`
   mutation InsertNewUser($user: UserChangePayloadInput!) {
     insertNewUser(user: $user) {
       operation
@@ -43,6 +43,19 @@ export const MUTATE_USER = gql`
 export const DELETE_USER = gql`
   mutation DeleteUser($user: UserChangePayloadInput!) {
     deleteUser(user: $user) {
+      operation
+      user {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($user: UserChangePayloadInput!) {
+    updateUser(user: $user) {
       operation
       user {
         id
