@@ -69,7 +69,12 @@ CREATE TABLE UserDetails (
 GO
 ```
 
-1. Insert sample data:
+1. Enable Broker Service in SQL Server, run the following command:
+```bash
+ALTER DATABASE [Testing] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE;
+```
+
+2. Insert sample data:
 ```bash
 INSERT INTO UserDetails (Name, Email, IsActive)
 VALUES ('John Doe', 'john.doe@example.com', 1),
