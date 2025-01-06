@@ -1,6 +1,7 @@
 # Frontend (Angular)
 1. Clone the repository:
-```bash git clone https://github.com/jatiinyadav/cbo-crud.git
+```bash
+git clone https://github.com/jatiinyadav/cbo-crud.git
 cd cbo-crud/frontend
 ```
 
