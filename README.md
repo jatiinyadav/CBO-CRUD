@@ -51,7 +51,7 @@ dotnet run
 Create the database:
 
 Open SQL Server Management Studio (SSMS).
-Execute the following script to create the Testing database and UserDetails table:
+Execute the following script to create the `Testing` database and `UserDetails` table:
 ```bash
 CREATE DATABASE Testing;
 GO
@@ -89,3 +89,14 @@ Start the frontend and backend servers:
     ii) Backend: Access the GraphQL Playground at http://localhost:5000/graphql.
    
     iii) Query the GraphQL API: Example GraphQL query:
+   ```bash
+       query GetUserDetails {
+            userDetails {
+                id
+                name
+                email
+                createdDate
+                isActive
+            }
+        }
+    ```
