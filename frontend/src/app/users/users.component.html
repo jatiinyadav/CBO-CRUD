@@ -4,7 +4,7 @@
   <div class="text-center">
     <button type="submit" (click)="addNewUser()"
       class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-3/12 px-5 py-2.5 text-center">
-      {{addingNewUser ? "Back to all users": "Add New User"}}
+      {{buttonMessage}}
     </button>
     <br><br><br>
     @if(!addingNewUser){
@@ -73,7 +73,8 @@
     </div>
     }
     @else {
-    <app-form [id]="this.id" [fullName]="this.fullName" [email]="this.email" [status]="this.isActive"  (newUser)="receiveNewUser($event)"></app-form>
+    <app-form [id]="this.id" [fullName]="this.fullName" [email]="this.email" [status]="this.isActive"
+      (newUser)="receiveNewUser($event)"></app-form>
     }
   </div>
 </div>

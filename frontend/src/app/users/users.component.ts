@@ -54,6 +54,7 @@ export class UsersComponent {
   fetchingUsers = true;
   private subscription!: Subscription;
   public addingNewUser = false;
+  buttonMessage = "Create new user"
   constructor(private apollo: Apollo) { }
 
   ngOnInit() {
@@ -65,7 +66,7 @@ export class UsersComponent {
     this.apollo.query<any>({ query: GET_USERS }).subscribe(({ data }) => {
       this.users = data.users;
       this.fetchingUsers = false;
-      console.log('Fetched Users:', this.users);
+      // console.log('Fetched Users:', this.users);
     });
   }
 
@@ -78,7 +79,7 @@ export class UsersComponent {
           if (data && data.onRoleAdded.operation == 'INSERT') {
             const { onRoleAdded } = data;
             this.users = [...this.users, onRoleAdded.user];
-            console.log('New User Added:', this.users);
+            // console.log('New User Added:', this.users);
           }
 
           else if (data && data.onRoleAdded.operation == 'DELETE') {
@@ -86,19 +87,19 @@ export class UsersComponent {
           }
 
           else if (data && data.onRoleAdded.operation == 'UPDATE') {
-            // this.users.forEach((user: UserDetails) => {
-            //   if (user.id == data.onRoleAdded.user.id) {
-            //     user = data.onRoleAdded.user
-            //   }
-            // })
-            this.fetchUsers()
+            this.users.forEach((user: UserDetails) => {
+              if (user.id == data.onRoleAdded.user.id) {
+                user = data.onRoleAdded.user
+              }
+            })
+            // this.fetchUsers()
           }
         });
     }
   }
 
   deleteUser(user: UserDetails) {
-    console.log(user);
+    // console.log(user);
     this.apollo
       .mutate({
         mutation: DELETE_USER,
@@ -121,7 +122,7 @@ export class UsersComponent {
           alert(`Error creating user: ${errors[0].message}`);
         }
         if (data) {
-          console.log('New user created', JSON.stringify(data, null, 2));
+          // console.log('New user created', JSON.stringify(data, null, 2));
         }
       });
   }
@@ -129,16 +130,23 @@ export class UsersComponent {
   addNewUser() {
     this.operation = "new"
     this.addingNewUser = !this.addingNewUser
+    this.addingNewUser ? this.buttonMessage = "Back to all users" : this.buttonMessage = "Create new user"
+    if (this.addingNewUser) {
+      this.id = 0
+      this.fullName = ""
+      this.email = ""
+    }
   }
 
   receiveNewUser(user: any) {
-    console.log(user);
+    // console.log(user);
     if (this.operation == "new") {
       this.insertUser(user)
     } else {
       this.updateUserDB(user)
     }
     this.addingNewUser = !this.addingNewUser
+    this.buttonMessage = "Create new user"
   }
 
   insertUser(user: any) {
@@ -164,7 +172,7 @@ export class UsersComponent {
           alert(`Error creating user: ${errors[0].message}`);
         }
         if (data) {
-          console.log('New user created', JSON.stringify(data, null, 2));
+          // console.log('New user created', JSON.stringify(data, null, 2));
         }
       });
   }
@@ -175,8 +183,8 @@ export class UsersComponent {
     this.email = user.email
     this.isActive = user.isActive
     this.id = user.id
-    console.log(this.id);
     this.addingNewUser = !this.addingNewUser
+    this.buttonMessage = "Back to all users"
   }
 
   updateUserDB(user: any) {
@@ -202,10 +210,31 @@ export class UsersComponent {
           alert(`Error creating user: ${errors[0].message}`);
         }
         if (data) {
-          console.log(user);
-          this.fetchUsers()
 
-          console.log('New user created', JSON.stringify(data, null, 2));
+          let updatedUser: UserDetails = {
+            id: 0,
+            name: '',
+            email: '',
+            createdDate: new Date(),
+            isActive: false
+          }
+
+          this.users.forEach((user_details: UserDetails) => {
+
+            if (user_details.id == user.id) {
+              updatedUser.name = user.fullName
+              updatedUser.email = user.email
+              updatedUser.isActive = user?.status == "active" ? true : false
+              user_details = updatedUser
+              console.log(user_details);
+              console.log(user);
+              console.log(updatedUser);
+              this.addingNewUser = !this.addingNewUser
+              setTimeout(() => {
+                this.addingNewUser = !this.addingNewUser
+              }, 10)
+            }
+          })
         }
       });
   }
